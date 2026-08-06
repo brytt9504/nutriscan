@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Header from "@/components/Header";
+import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
 // Using the system font stack (configured in globals.css) instead of
@@ -8,8 +10,9 @@ import "./globals.css";
 // branded font here once NutriScan's design system is finalized.
 
 export const metadata: Metadata = {
-  title: "NutriScan",
-  description: "NutriScan — clinical vitality scanning, powered by Biozoom.",
+  title: "NutriScan — Healthy eating shouldn’t be guesswork.",
+  description:
+    "See how your fruit and vegetable habits are reflected in your body with a quick, non-invasive scan. Get your NutriScore in about 2 minutes.",
 };
 
 export default function RootLayout({
@@ -20,7 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-white text-slate-900 font-sans">
-        {children}
+        <AuthProvider>
+          <Header />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

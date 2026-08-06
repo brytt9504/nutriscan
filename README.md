@@ -79,3 +79,61 @@ Connected to Vercel: every push to `main` auto-deploys to production;
 pushes to other branches get their own preview URL. Custom domain
 `app.yournutriscan.com` points at this Vercel project (see the infra
 checklist Brytt has for exact DNS steps).
+
+# NutriScan
+
+NutriScan is a white-label web application for BioZoom vitality scanners.
+
+The application allows clinicians, retailers, wellness companies, and nutrition brands to deliver branded scanner experiences while using a shared codebase.
+
+---
+
+## Project Goals
+
+Build the simplest, cleanest, and most trustworthy scanner experience possible.
+
+Priorities:
+
+1. Exceptional UX
+2. Reliable scanner communication
+3. White-label branding
+4. Fast performance
+5. Clean architecture
+
+---
+
+## Documentation
+
+Read these documents in order:
+
+1. Product.md
+2. Design-System.md
+3. Architecture.md
+4. Scanner.md
+
+---
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- TailwindCSS
+- Supabase
+- Vercel
+- WebUSB
+- BioZoom SDK
+
+---
+
+## Rules
+
+Never invent scanner protocol behavior.
+
+Never hardcode branding.
+
+Always use reusable components.
+
+Prefer simple solutions over clever ones.
+
+Optimize for maintainability.
