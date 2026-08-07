@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   ArrowRightIcon,
@@ -23,6 +24,16 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { status, user, signOut } = useAuth();
   const signedIn = status === "signed-in";
+  const pathname = usePathname();
+
+  // The scanner flow (/scan and everything under it) is a focused, guided
+  // wizard, not a marketing page — no site header, logo, nav, or Begin Scan
+  // button there. Its own layout (scan/layout.tsx) supplies the only
+  // navigation it gets: an Exit link and the progress indicator.
+  const isScanFlow = pathname === "/scan" || pathname?.startsWith("/scan/");
+  if (isScanFlow) {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/90 backdrop-blur">
