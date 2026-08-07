@@ -3,11 +3,16 @@
 import { usePathname } from "next/navigation";
 import { CheckCircleIcon } from "@/components/icons";
 
+// The one continuous progress system for the whole scanner experience —
+// every screen from Welcome through Results is represented here in order,
+// and every screen's chrome renders this same component so progress reads
+// as a single sequence rather than several disconnected mini-flows.
 const STEPS = [
-  { label: "Consent", path: "/scan" },
-  { label: "Connect", path: "/scan/connect" },
+  { label: "Welcome", path: "/scan/welcome" },
+  { label: "System Check", path: "/scan/system-check" },
+  { label: "Instructions", path: "/scan" },
   { label: "Scan", path: "/scan/in-progress" },
-  { label: "Analyze", path: "/scan/processing" },
+  { label: "Processing", path: "/scan/processing" },
   { label: "Results", path: "/scan/results" },
 ];
 

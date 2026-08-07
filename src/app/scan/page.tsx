@@ -28,7 +28,7 @@ const INSTRUCTIONS = [
   },
 ];
 
-export default function ScanConsentPage() {
+export default function ScanInstructionsPage() {
   const router = useRouter();
   const [agreed, setAgreed] = useState(false);
 
@@ -82,16 +82,14 @@ export default function ScanConsentPage() {
             className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-700 focus:ring-emerald-600"
           />
           <span className="text-sm leading-relaxed text-slate-600">
-            I understand this scan is for wellness tracking only, not a
-            medical diagnosis, and I consent to my results being saved to my
-            NutriScan account.
+            I have read these instructions and I&apos;m ready to begin.
           </span>
         </label>
 
         <button
           type="button"
           disabled={!agreed}
-          onClick={() => router.push("/scan/connect")}
+          onClick={() => router.push("/scan/in-progress")}
           className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-emerald-700 px-6 py-3.5 text-base font-medium text-white shadow-sm transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-slate-300"
         >
           I&apos;m ready

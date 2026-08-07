@@ -470,6 +470,67 @@ export function CalendarIcon({ className }: IconProps) {
   );
 }
 
+export function BrowserIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+      <path d="M3 9h18" />
+      <circle cx="6.3" cy="6.75" r="0.55" fill="currentColor" stroke="none" />
+      <circle cx="8.3" cy="6.75" r="0.55" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function UsbIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="6" r="2" />
+      <path d="M12 8v5M8.5 9.5 12 13M15.5 9.5 12 13" />
+      <path d="M8.5 9.5V8M15.5 9.5V8" />
+      <circle cx="8.5" cy="16.5" r="2" />
+      <circle cx="15.5" cy="16.5" r="2" />
+      <path d="M12 13v3" />
+    </svg>
+  );
+}
+
+export function ScannerDeviceIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="2.5" y="7" width="19" height="10" rx="2.5" />
+      <circle cx="7" cy="12" r="1" fill="currentColor" stroke="none" />
+      <path d="M12.5 9.5h5.5M12.5 12h5.5M12.5 14.5h3.5" />
+    </svg>
+  );
+}
+
 export function LogoMark({ className }: IconProps) {
   const dots = [
     [12, 4.5],

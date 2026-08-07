@@ -6,8 +6,9 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRightIcon, CalendarIcon, TrendUpIcon } from "@/components/icons";
 import ProgressChart from "@/components/ProgressChart";
-import { MOCK_SCAN_HISTORY } from "@/lib/mock-scanner";
+import { getScanHistory } from "@/lib/mock-scanner";
 import { useAuth } from "@/lib/auth-context";
+import { getScoreStatus } from "@/lib/score";
 
 export default function HistoryPage() {
   const { status, user } = useAuth();
@@ -27,7 +28,8 @@ export default function HistoryPage() {
     );
   }
 
-  const latest = MOCK_SCAN_HISTORY[0];
+  const history = getScanHistory();
+  const latest = history[0];
 
   return (
     <div className="flex flex-1 flex-col bg-slate-50 px-6 py-12">
@@ -47,7 +49,7 @@ export default function HistoryPage() {
             </h1>
           </div>
           <Link
-            href="/scan"
+            href="/scan/welcome"
             className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-emerald-700 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-800 sm:mt-0"
           >
             New scan
@@ -77,21 +79,19 @@ export default function HistoryPage() {
               {latest.score}
             </span>
             <span className="mt-1 text-sm font-medium text-emerald-700">
-              {latest.status}
+              {getScoreStatus(latest.score)}
             </span>
           </div>
         </div>
 
         <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-2 shadow-sm">
           <ul>
-            {MOCK_SCAN_HISTORY.map((entry, index) => (
+            {history.map((entry, index) => (
               <li
                 key={entry.id}
                 className={
                   "flex items-center justify-between px-4 py-4 " +
-                  (index < MOCK_SCAN_HISTORY.length - 1
-                    ? "border-b border-slate-100"
-                    : "")
+                  (index < history.length - 1 ? "border-b border-slate-100" : "")
                 }
               >
                 <div className="flex items-center gap-3">
@@ -102,7 +102,9 @@ export default function HistoryPage() {
                     <p className="text-sm font-medium text-slate-900">
                       {entry.date}
                     </p>
-                    <p className="text-xs text-slate-400">{entry.status}</p>
+                    <p className="text-xs text-slate-400">
+                      {getScoreStatus(entry.score)}
+                    </p>
                   </div>
                 </div>
                 <span className="text-lg font-semibold text-slate-900">

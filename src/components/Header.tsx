@@ -75,7 +75,7 @@ export default function Header() {
               </Link>
             )}
             <Link
-              href="/scan"
+              href="/scan/welcome"
               className="inline-flex items-center gap-1.5 rounded-full bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-emerald-700/10 transition-all hover:bg-emerald-800 hover:shadow-md"
             >
               Begin Scan
@@ -138,7 +138,7 @@ export default function Header() {
           )}
 
           <Link
-            href="/scan"
+            href="/scan/welcome"
             onClick={() => setMenuOpen(false)}
             className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-700 px-5 py-3 text-sm font-medium text-white"
           >

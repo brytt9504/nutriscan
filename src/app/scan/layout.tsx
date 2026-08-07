@@ -1,31 +1,13 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { ChevronLeftIcon } from "@/components/icons";
 import ScanStepper from "@/components/scan/ScanStepper";
-import { useAuth } from "@/lib/auth-context";
 
+// Shared chrome for the whole scanner flow: Welcome → System Check →
+// Instructions → Scan → Processing → Results. No auth gate here — signing
+// in only happens after Results, when there's an actual scan to save (see
+// scan/results/page.tsx), so every screen up to and including Results is
+// open to signed-out visitors.
 export default function ScanLayout({ children }: { children: React.ReactNode }) {
-  const { status } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    if (status === "signed-out") {
-      router.replace(`/sign-in?next=${encodeURIComponent(pathname)}`);
-    }
-  }, [status, pathname, router]);
-
-  if (status !== "signed-in") {
-    return (
-      <div className="flex flex-1 items-center justify-center px-6 py-24 text-sm text-slate-400">
-        Loading…
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-1 flex-col bg-slate-50">
       <div className="border-b border-slate-100 bg-white px-6 py-5">

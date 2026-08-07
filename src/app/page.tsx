@@ -135,7 +135,7 @@ export default function Home() {
 
             <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3">
               <Link
-                href="/scan"
+                href="/scan/welcome"
                 className="inline-flex items-center gap-1.5 rounded-full bg-emerald-700 px-7 py-3.5 text-base font-semibold text-white shadow-sm ring-1 ring-emerald-700/10 transition-all hover:bg-emerald-800 hover:shadow-md"
               >
                 Begin Scan
@@ -373,7 +373,7 @@ export default function Home() {
                 Better habits. Better choices. Better results.
               </p>
               <Link
-                href="/scan"
+                href="/scan/welcome"
                 className="mt-9 inline-flex items-center gap-1.5 rounded-full bg-emerald-700 px-8 py-3.5 text-base font-semibold text-white shadow-sm ring-1 ring-emerald-700/10 transition-all hover:bg-emerald-800 hover:shadow-md"
               >
                 Begin Scan

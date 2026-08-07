@@ -28,7 +28,6 @@ export default function ScanProcessingPage() {
       if (!controller.signal.aborted) {
         const params = new URLSearchParams({
           score: String(result.score),
-          status: result.status,
           delta: String(result.delta),
         });
         router.push(`/scan/results?${params.toString()}`);
