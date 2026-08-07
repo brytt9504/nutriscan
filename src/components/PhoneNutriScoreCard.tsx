@@ -1,4 +1,9 @@
-import NutriScoreGauge from "@/components/NutriScoreGauge";
+import NutriScoreGaugeCompact from "@/components/NutriScoreGaugeCompact";
+
+// Sample score for marketing use — 85 sits within the "Optimal" range
+// (70-90, see src/lib/score.ts), matching the surrounding homepage copy
+// that describes a strong, on-track result.
+const SAMPLE_SCORE = 85;
 
 type PhoneNutriScoreCardProps = {
   variant?: "phone" | "flat";
@@ -14,7 +19,7 @@ export default function PhoneNutriScoreCard({
       <div
         className={`rounded-2xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}
       >
-        <NutriScoreGauge score={97} status="Excellent" delta={4} size={180} />
+        <NutriScoreGaugeCompact score={SAMPLE_SCORE} delta={4} />
       </div>
     );
   }
@@ -23,8 +28,8 @@ export default function PhoneNutriScoreCard({
     <div
       className={`rounded-[2.25rem] bg-slate-900 p-3 shadow-xl ${className}`}
     >
-      <div className="flex flex-col items-center rounded-[1.65rem] bg-white px-6 py-8">
-        <NutriScoreGauge score={97} status="Excellent" delta={4} size={190} />
+      <div className="flex flex-col items-center rounded-[1.65rem] bg-white px-4 py-6">
+        <NutriScoreGaugeCompact score={SAMPLE_SCORE} delta={4} />
       </div>
     </div>
   );

@@ -5,10 +5,56 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { animate, motion } from "framer-motion";
 import { ArrowRightIcon, CheckCircleIcon } from "@/components/icons";
-import NutriScoreRing from "@/components/NutriScoreRing";
+import NutriScoreGauge from "@/components/NutriScoreGauge";
 import { useAuth } from "@/lib/auth-context";
 import { mockSaveScanResult } from "@/lib/mock-scanner";
-import { getScoreStatus } from "@/lib/score";
+import {
+  getScoreBadgeLabel,
+  getScoreStatus,
+  isOptimalScore,
+  SCORE_RANGES,
+  type ScoreStatus,
+} from "@/lib/score";
+
+// One short sentence explaining what the number means (item 6), and one
+// concise suggestion (item 8's recommendation card) — kept separate so each
+// stays short, per status. Not medical advice; see Design-System.md tone
+// guidance (encouraging, scientific, never preachy).
+const STATUS_COPY: Record<ScoreStatus, { explanation: string; recommendation: string }> = {
+  "Needs improvement": {
+    explanation:
+      "Your carotenoid levels are lower than typical for a diet rich in colorful produce.",
+    recommendation:
+      "Add more colorful fruits and vegetables to your meals, then check back in a few weeks.",
+  },
+  Fair: {
+    explanation: "Your carotenoid levels are approaching the optimal range.",
+    recommendation:
+      "A few more servings of colorful produce a week can help move you into the optimal range.",
+  },
+  Optimal: {
+    explanation:
+      "Your carotenoid levels reflect a diet rich in colorful fruits and vegetables.",
+    recommendation:
+      "Keep up your current habits — your carotenoid intake looks right on track.",
+  },
+  "Too high": {
+    explanation:
+      "Your carotenoid levels are higher than typical — often linked to high supplement intake.",
+    recommendation:
+      "Consider moderating carotenoid-rich supplements, and check in with a healthcare provider if this persists.",
+  },
+};
+
+// Small legend swatch colors — representative of each band's position on
+// the gauge's spectrum, not pulled from the gauge itself since these are
+// flat chips rather than a gradient.
+const RANGE_SWATCH: Record<ScoreStatus, string> = {
+  "Needs improvement": "#dc2626",
+  Fair: "#eab308",
+  Optimal: "#16a34a",
+  "Too high": "#ea580c",
+};
 
 export default function ScanResultsPage() {
   return (
@@ -23,6 +69,9 @@ function ScanResults() {
   const score = Number(searchParams.get("score") ?? 91);
   const delta = Number(searchParams.get("delta") ?? 3);
   const status = getScoreStatus(score);
+  const badgeLabel = getScoreBadgeLabel(score);
+  const optimal = isOptimalScore(score);
+  const copy = STATUS_COPY[status];
 
   const [displayScore, setDisplayScore] = useState(0);
 
@@ -59,47 +108,91 @@ function ScanResults() {
   const nextParam = `?next=${encodeURIComponent(resultsUrl)}`;
 
   return (
-    <div className="flex flex-1 items-center justify-center px-6 py-12">
+    <div className="flex flex-1 justify-center px-6 py-10 sm:items-center sm:py-12">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="w-full max-w-md text-center"
+        className="w-full max-w-md"
       >
-        <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-          <CheckCircleIcon className="h-5 w-5" />
-        </span>
-        <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-          Scan complete
+        {/* 1. Page title */}
+        <h1 className="text-center text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+          Your NutriScore
         </h1>
-        <p className="mt-1.5 text-sm text-slate-500">
-          Here&apos;s your NutriScore from today.
-        </p>
 
-        <div className="mt-8 flex justify-center">
-          <NutriScoreRing
-            score={displayScore}
-            status={status}
-            delta={delta}
-            size={220}
-            showSampleTag={false}
-          />
+        {/* 2-4. Spectrum arc gauge, large score, status label (all inside the shared gauge) */}
+        <div className="mt-6 flex justify-center">
+          <NutriScoreGauge score={displayScore} showSampleTag={false} />
         </div>
 
-        <p className="mx-auto mt-6 max-w-sm text-sm leading-relaxed text-slate-600">
-          Your score suggests strong carotenoid status consistent with a diet
-          rich in colorful fruits and vegetables. Keep it up.
+        {/* 5. Status badge */}
+        <div className="flex justify-center">
+          <span
+            className={
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold " +
+              (optimal
+                ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                : "bg-amber-50 text-amber-800 ring-1 ring-amber-200")
+            }
+          >
+            <CheckCircleIcon className="h-3.5 w-3.5" />
+            {badgeLabel}
+          </span>
+        </div>
+
+        {/* 6. One short explanatory sentence */}
+        <p className="mx-auto mt-4 max-w-sm text-center text-sm leading-relaxed text-slate-600">
+          {copy.explanation}
         </p>
 
+        {/* 7. Compact "what it means" card with the score ranges */}
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            What it means
+          </p>
+          <ul className="mt-3 flex flex-col gap-2">
+            {SCORE_RANGES.map((range) => (
+              <li
+                key={range.status}
+                className={
+                  "flex items-center justify-between rounded-xl px-2.5 py-1.5 text-sm " +
+                  (range.status === status ? "bg-slate-50 font-medium text-slate-900" : "text-slate-500")
+                }
+              >
+                <span className="flex items-center gap-2">
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: RANGE_SWATCH[range.status] }}
+                  />
+                  {range.status}
+                </span>
+                <span className="tabular-nums text-xs text-slate-400">
+                  {range.min}–{range.max}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* 8. One concise recommendation card */}
+        <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+            Recommendation
+          </p>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-700">
+            {copy.recommendation}
+          </p>
+        </div>
+
         {authStatus === "signed-in" ? (
-          <div className="mx-auto mt-8 flex max-w-sm items-center justify-center gap-2 rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-3 text-sm text-emerald-800">
+          <div className="mt-4 flex items-center justify-center gap-2 rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-3 text-sm text-emerald-800">
             <CheckCircleIcon className="h-4 w-4 shrink-0 text-emerald-700" />
             {saved
               ? `Saved to ${user?.name ?? "your"} history`
               : "Saving to your history…"}
           </div>
         ) : (
-          <div className="mx-auto mt-8 max-w-sm rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
             <p className="text-sm font-medium text-slate-900">
               Save this result
             </p>
@@ -124,25 +217,26 @@ function ScanResults() {
           </div>
         )}
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link
-            href="/history"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-700 px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-800"
-          >
-            View your history
-            <ArrowRightIcon className="h-3.5 w-3.5" />
-          </Link>
+        {/* 9-10. Primary "Scan again", secondary "View history" */}
+        <div className="mt-6 flex flex-col gap-3">
           <Link
             href="/scan/welcome"
-            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 px-6 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-700 px-6 py-3.5 text-base font-semibold text-white shadow-sm ring-1 ring-emerald-700/10 transition-all hover:bg-emerald-800 hover:shadow-md"
           >
             Scan again
+            <ArrowRightIcon className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/history"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 px-6 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+          >
+            View history
           </Link>
         </div>
 
         <Link
           href="/"
-          className="mt-6 inline-block text-sm font-medium text-slate-400 hover:text-slate-600"
+          className="mt-6 block text-center text-sm font-medium text-slate-400 hover:text-slate-600"
         >
           Done for now
         </Link>

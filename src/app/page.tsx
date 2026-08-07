@@ -14,7 +14,7 @@ import {
   TrendUpIcon,
   WifiRingsIcon,
 } from "@/components/icons";
-import NutriScoreRing from "@/components/NutriScoreRing";
+import NutriScoreGaugeCompact from "@/components/NutriScoreGaugeCompact";
 import PhoneNutriScoreCard from "@/components/PhoneNutriScoreCard";
 import ProgressChart from "@/components/ProgressChart";
 
@@ -171,8 +171,10 @@ export default function Home() {
                 className="object-cover"
                 sizes="(min-width: 768px) 50vw, 100vw"
               />
-              <PhoneNutriScoreCard className="absolute -top-8 right-4 w-40 rotate-3 lg:w-44 xl:w-48" />
             </div>
+            {/* Sibling to (not nested in) the overflow-hidden image wrapper above,
+                so this can overhang the photo's top-right corner without being clipped. */}
+            <PhoneNutriScoreCard className="absolute -top-8 right-4 w-40 rotate-3 lg:w-44 xl:w-48" />
           </div>
 
           {/* Mobile hero visual */}
@@ -268,7 +270,7 @@ export default function Home() {
                 Your NutriScore
               </h3>
               <div className="mt-6 flex flex-1 flex-col items-center gap-6 sm:flex-row sm:items-center lg:flex-col lg:justify-center xl:flex-row">
-                <NutriScoreRing score={97} status="Excellent" delta={4} size={188} />
+                <NutriScoreGaugeCompact score={85} delta={4} size={200} />
                 <div className="text-center sm:text-left lg:text-center xl:text-left">
                   <p className="text-sm leading-relaxed text-slate-600">
                     Strong carotenoid status — consistent with a diet rich in

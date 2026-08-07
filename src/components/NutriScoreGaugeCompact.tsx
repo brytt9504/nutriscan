@@ -3,14 +3,14 @@
 import NutriScoreGaugeArc from "@/components/NutriScoreGaugeArc";
 import { getScoreStatus, isOptimalScore } from "@/lib/score";
 
-// Full NutriScore gauge — used on the results page. Shares its arc/needle
-// with NutriScoreGaugeCompact (the homepage version) via NutriScoreGaugeArc,
-// so the two always look identical; this one adds the "Too Low / Optimal /
-// Too High" zone labels underneath, which the compact homepage version
-// intentionally omits. Status is always derived from `score` via
-// getScoreStatus — there is no way to pass in a mismatched label.
+// Compact "hero" NutriScore gauge — used on the homepage only. Shares its
+// arc/needle with the full NutriScoreGauge (results page) via
+// NutriScoreGaugeArc, so appearance stays consistent, but renders nothing
+// beyond arc + score + status: no zone labels, no recommendation, no scale
+// text, no cards. Keep it that way — the homepage is a preview, not the
+// results experience.
 
-type NutriScoreGaugeProps = {
+type NutriScoreGaugeCompactProps = {
   score: number;
   delta?: number;
   size?: number;
@@ -18,13 +18,13 @@ type NutriScoreGaugeProps = {
   className?: string;
 };
 
-export default function NutriScoreGauge({
+export default function NutriScoreGaugeCompact({
   score,
   delta,
   size,
   showSampleTag = true,
   className = "",
-}: NutriScoreGaugeProps) {
+}: NutriScoreGaugeCompactProps) {
   const clampedScore = Math.max(0, Math.min(100, score));
   const status = getScoreStatus(clampedScore);
   const optimal = isOptimalScore(clampedScore);
@@ -61,12 +61,6 @@ export default function NutriScoreGauge({
             {delta} since last scan
           </span>
         )}
-      </div>
-
-      <div className="mt-3 flex w-full justify-between text-[11px] font-medium uppercase tracking-wide text-slate-400">
-        <span>Too Low</span>
-        <span>Optimal</span>
-        <span>Too High</span>
       </div>
 
       <span className="sr-only">NutriScore: {clampedScore}, {status}.</span>

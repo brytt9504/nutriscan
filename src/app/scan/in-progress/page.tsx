@@ -1,31 +1,51 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { HandIcon } from "@/components/icons";
 import { mockRunScan } from "@/lib/mock-scanner";
 
 const RADIUS = 90;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+const DEFAULT_DURATION_MS = 30_000;
+
+const MODE_LABELS: Record<string, string> = {
+  quick: "Quick Scan",
+  precision: "Precision Scan",
+};
 
 export default function ScanInProgressPage() {
+  return (
+    <Suspense fallback={null}>
+      <ScanInProgress />
+    </Suspense>
+  );
+}
+
+function ScanInProgress() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [percent, setPercent] = useState(0);
+
+  // The scan mode/duration is chosen on the Instructions screen (Quick —
+  // 30s vs Precision — 90s, see docs/Scanner.md); this only affects how
+  // fast the mock progress ring fills, which is illustrative UX pacing, not
+  // real scanner behavior — see the note in lib/mock-scanner.ts.
+  const durationMs = Number(searchParams.get("duration")) || DEFAULT_DURATION_MS;
+  const modeLabel = MODE_LABELS[searchParams.get("mode") ?? ""];
 
   useEffect(() => {
     const controller = new AbortController();
 
-    mockRunScan(setPercent, { durationMs: 6000, signal: controller.signal }).then(
-      () => {
-        if (!controller.signal.aborted) {
-          setTimeout(() => router.push("/scan/processing"), 400);
-        }
-      },
-    );
+    mockRunScan(setPercent, { durationMs, signal: controller.signal }).then(() => {
+      if (!controller.signal.aborted) {
+        setTimeout(() => router.push("/scan/processing"), 400);
+      }
+    });
 
     return () => controller.abort();
-  }, [router]);
+  }, [router, durationMs]);
 
   const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
 
@@ -73,8 +93,8 @@ export default function ScanInProgressPage() {
         Hold still
       </h1>
       <p className="mt-1.5 max-w-xs text-center text-sm text-slate-500">
-        Keep your palm flat on the scanner. This usually takes about two
-        minutes.
+        Keep your palm flat on the scanner
+        {modeLabel ? ` for your ${modeLabel.toLowerCase()}` : ""}.
       </p>
     </div>
   );
