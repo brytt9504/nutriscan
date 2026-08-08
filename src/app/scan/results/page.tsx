@@ -3,18 +3,13 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { animate, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRightIcon, CheckCircleIcon } from "@/components/icons";
 import NutriScoreGauge from "@/components/NutriScoreGauge";
 import { useAuth } from "@/lib/auth-context";
+import { CARD_FADE_DURATION, CARD_STAGGER, CARDS_FADE_AT, STATUS_FADE_AT, STATUS_FADE_DURATION } from "@/lib/gauge-timing";
 import { mockSaveScanResult } from "@/lib/mock-scanner";
-import {
-  getScoreBadgeLabel,
-  getScoreStatus,
-  isOptimalScore,
-  SCORE_RANGES,
-  type ScoreStatus,
-} from "@/lib/score";
+import { getScoreStatus, SCORE_RANGES, type ScoreStatus } from "@/lib/score";
 
 // One short sentence explaining what the number means (item 6), and one
 // concise suggestion (item 8's recommendation card) — kept separate so each
@@ -69,21 +64,7 @@ function ScanResults() {
   const score = Number(searchParams.get("score") ?? 91);
   const delta = Number(searchParams.get("delta") ?? 3);
   const status = getScoreStatus(score);
-  const badgeLabel = getScoreBadgeLabel(score);
-  const optimal = isOptimalScore(score);
   const copy = STATUS_COPY[status];
-
-  const [displayScore, setDisplayScore] = useState(0);
-
-  useEffect(() => {
-    const controls = animate(0, score, {
-      duration: 1.1,
-      delay: 0.3,
-      ease: "easeOut",
-      onUpdate: (value) => setDisplayScore(Math.round(value)),
-    });
-    return () => controls.stop();
-  }, [score]);
 
   // Authentication happens after the result, not before it — see
   // scan/layout.tsx. A returning signed-in user's result is saved without
@@ -120,33 +101,33 @@ function ScanResults() {
           Your NutriScore
         </h1>
 
-        {/* 2-4. Spectrum arc gauge, large score, status label (all inside the shared gauge) */}
+        {/* 2-4. Spectrum arc gauge, large score, status label (all inside
+            the shared gauge). `score` is the final value from the start —
+            see NutriScoreGauge's own note on why it's never counted up. */}
         <div className="mt-6 flex justify-center">
-          <NutriScoreGauge score={displayScore} showSampleTag={false} />
+          <NutriScoreGauge score={score} showSampleTag={false} />
         </div>
 
-        {/* 5. Status badge */}
-        <div className="flex justify-center">
-          <span
-            className={
-              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold " +
-              (optimal
-                ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
-                : "bg-amber-50 text-amber-800 ring-1 ring-amber-200")
-            }
-          >
-            <CheckCircleIcon className="h-3.5 w-3.5" />
-            {badgeLabel}
-          </span>
-        </div>
-
-        {/* 6. One short explanatory sentence */}
-        <p className="mx-auto mt-4 max-w-sm text-center text-sm leading-relaxed text-slate-600">
+        {/* 6. Explanatory sentence — fades in timed to appear right as the
+            gauge's own status label does. The "What it means" card below
+            already covers the ranges, so there's no status pill here
+            repeating "Optimal"/"Within optimal range" a second time. */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: STATUS_FADE_DURATION, delay: STATUS_FADE_AT }}
+          className="mx-auto mt-4 max-w-sm text-center text-sm leading-relaxed text-slate-600"
+        >
           {copy.explanation}
-        </p>
+        </motion.p>
 
-        {/* 7. Compact "what it means" card with the score ranges */}
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
+        {/* 7. Supporting cards fade in last, with a slight stagger. */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: CARD_FADE_DURATION, delay: CARDS_FADE_AT }}
+          className="mt-6 rounded-2xl border border-slate-200 bg-white p-4"
+        >
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
             What it means
           </p>
@@ -172,17 +153,21 @@ function ScanResults() {
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
 
-        {/* 8. One concise recommendation card */}
-        <div className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: CARD_FADE_DURATION, delay: CARDS_FADE_AT + CARD_STAGGER }}
+          className="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4"
+        >
           <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
             Recommendation
           </p>
           <p className="mt-1.5 text-sm leading-relaxed text-slate-700">
             {copy.recommendation}
           </p>
-        </div>
+        </motion.div>
 
         {authStatus === "signed-in" ? (
           <div className="mt-4 flex items-center justify-center gap-2 rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-3 text-sm text-emerald-800">

@@ -1,6 +1,13 @@
 "use client";
 
+import { motion } from "framer-motion";
 import NutriScoreGaugeArc from "@/components/NutriScoreGaugeArc";
+import {
+  SCORE_FADE_AT,
+  SCORE_FADE_DURATION,
+  STATUS_FADE_AT,
+  STATUS_FADE_DURATION,
+} from "@/lib/gauge-timing";
 import { getScoreStatus, isOptimalScore } from "@/lib/score";
 
 // Compact "hero" NutriScore gauge — used on the homepage only. Shares its
@@ -8,7 +15,8 @@ import { getScoreStatus, isOptimalScore } from "@/lib/score";
 // NutriScoreGaugeArc, so appearance stays consistent, but renders nothing
 // beyond arc + score + status: no zone labels, no recommendation, no scale
 // text, no cards. Keep it that way — the homepage is a preview, not the
-// results experience.
+// results experience. Score/status fade timing matches NutriScoreGauge —
+// see lib/gauge-timing.ts.
 
 type NutriScoreGaugeCompactProps = {
   score: number;
@@ -43,23 +51,36 @@ export default function NutriScoreGaugeCompact({
       <NutriScoreGaugeArc score={clampedScore} />
 
       <div className="-mt-2 flex flex-col items-center text-center">
-        <span className="text-5xl font-semibold tracking-tight text-slate-900 sm:text-6xl">
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: SCORE_FADE_DURATION, delay: SCORE_FADE_AT }}
+          className="text-5xl font-semibold tracking-tight text-slate-900 sm:text-6xl"
+        >
           {clampedScore}
-        </span>
-        <span
+        </motion.span>
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: STATUS_FADE_DURATION, delay: STATUS_FADE_AT }}
           className={
             "mt-1 text-base font-medium sm:text-lg " +
             (optimal ? "text-emerald-700" : "text-amber-700")
           }
         >
           {status}
-        </span>
+        </motion.span>
         {delta !== undefined && (
-          <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-slate-500">
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: STATUS_FADE_DURATION, delay: STATUS_FADE_AT }}
+            className="mt-1.5 flex items-center gap-1 text-xs font-medium text-slate-500"
+          >
             <ArrowUp />
             {delta >= 0 ? "+" : ""}
             {delta} since last scan
-          </span>
+          </motion.span>
         )}
       </div>
 
