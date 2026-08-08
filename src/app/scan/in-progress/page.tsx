@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircleIcon } from "@/components/icons";
-import { mockRunScan } from "@/lib/mock-scanner";
+import { scannerService } from "@/services/scanner";
 
 const RADIUS = 90;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -75,7 +75,7 @@ function ScanInProgress() {
   useEffect(() => {
     const controller = new AbortController();
 
-    mockRunScan(setPercent, {
+    scannerService.startScan(setPercent, {
       durationMs: ACCELERATED_MOCK_MS,
       signal: controller.signal,
     }).then(() => {

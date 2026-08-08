@@ -6,9 +6,9 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRightIcon, CalendarIcon, TrendUpIcon } from "@/components/icons";
 import ProgressChart from "@/components/ProgressChart";
-import { getScanHistory } from "@/lib/mock-scanner";
 import { useAuth } from "@/lib/auth-context";
 import { getScoreStatus } from "@/lib/score";
+import { scannerService } from "@/services/scanner";
 
 export default function HistoryPage() {
   const { status, user } = useAuth();
@@ -28,7 +28,7 @@ export default function HistoryPage() {
     );
   }
 
-  const history = getScanHistory();
+  const history = scannerService.getHistory();
   const latest = history[0];
 
   return (

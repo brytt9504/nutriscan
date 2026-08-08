@@ -12,18 +12,18 @@ import {
   UsbIcon,
 } from "@/components/icons";
 import ScannerLayout from "@/components/scan/ScannerLayout";
-import {
-  SYSTEM_CHECKS,
-  mockRunSystemChecks,
-  type SystemCheckId,
-  type SystemCheckStatus,
-} from "@/lib/mock-scanner";
+import { scannerService, type SystemCheckId, type SystemCheckStatus } from "@/services/scanner";
 
 const ROW_ICONS = {
   browser: BrowserIcon,
   usb: UsbIcon,
   scanner: ScannerDeviceIcon,
 } as const;
+
+// Fetched once at module load — this is static metadata (labels/copy/
+// icons), synchronous in both the mock and (eventually) real service, so
+// there's no reason to re-fetch per render.
+const SYSTEM_CHECKS = scannerService.getSystemChecks();
 
 function initialState(): Record<SystemCheckId, SystemCheckStatus> {
   return Object.fromEntries(
@@ -73,7 +73,7 @@ function ChecksRunner({
   useEffect(() => {
     const controller = new AbortController();
 
-    mockRunSystemChecks(
+    scannerService.runSystemChecks(
       (id, status) => {
         setStatuses((prev) => ({ ...prev, [id]: status }));
       },

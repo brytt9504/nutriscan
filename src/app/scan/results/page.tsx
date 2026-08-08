@@ -8,8 +8,8 @@ import { ArrowRightIcon, CheckCircleIcon } from "@/components/icons";
 import NutriScoreGauge from "@/components/NutriScoreGauge";
 import { useAuth } from "@/lib/auth-context";
 import { CARD_FADE_DURATION, CARD_STAGGER, CARDS_FADE_AT, STATUS_FADE_AT, STATUS_FADE_DURATION } from "@/lib/gauge-timing";
-import { mockSaveScanResult } from "@/lib/mock-scanner";
 import { getScoreStatus, SCORE_RANGES, type ScoreStatus } from "@/lib/score";
+import { scannerService } from "@/services/scanner";
 
 // One short sentence explaining what the number means (item 6), and one
 // concise suggestion (item 8's recommendation card) — kept separate so each
@@ -78,7 +78,7 @@ function ScanResults() {
   useEffect(() => {
     if (authStatus !== "signed-in" || savedRef.current) return;
     savedRef.current = true;
-    mockSaveScanResult({ score, delta, capturedAt: new Date().toISOString() });
+    scannerService.saveResult({ score, delta, capturedAt: new Date().toISOString() });
     setSaved(true);
   }, [authStatus, score, delta]);
 

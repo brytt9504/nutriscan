@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { SparkleIcon } from "@/components/icons";
-import { mockAnalyzeScan } from "@/lib/mock-scanner";
+import { scannerService } from "@/services/scanner";
 
 const STAGES = [
   "Reading carotenoid levels",
@@ -23,7 +23,7 @@ export default function ScanProcessingPage() {
       setStageIndex((i) => Math.min(i + 1, STAGES.length - 1));
     }, 650);
 
-    mockAnalyzeScan({ signal: controller.signal }).then((result) => {
+    scannerService.analyzeScan({ signal: controller.signal }).then((result) => {
       clearInterval(stageTimer);
       if (!controller.signal.aborted) {
         const params = new URLSearchParams({
