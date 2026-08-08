@@ -2,13 +2,16 @@
 // `scannerService` from "@/services/scanner" and call these methods —
 // never WebUSB/serial APIs, and never the mock functions in
 // lib/mock-scanner.ts directly. Today `scannerService` resolves to
-// MockScannerService; swapping in BioZoomScannerService later (see
+// MockScannerService; swapping in WebUsbScannerService later (see
 // index.ts) should not require changing a single page.
 //
 // These types/methods describe scanner OPERATIONS (check the system, run a
-// scan, fetch history) — nothing here mentions WebUSB, serial ports, or the
-// BioZoom protocol. That detail lives entirely inside whichever
-// implementation class is active.
+// scan, fetch history) — nothing here mentions WebUSB, serial ports, or any
+// specific hardware protocol. Implementation classes are named for HOW they
+// communicate (e.g. WebUsbScannerService), not who manufactured the
+// hardware — the scanner vendor is an internal implementation detail that
+// lives entirely inside whichever implementation class is active; this
+// interface never names it.
 
 export type SystemCheckId = "browser" | "webusb" | "scanner";
 

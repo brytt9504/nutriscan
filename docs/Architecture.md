@@ -24,7 +24,7 @@ Hardware
 
 WebUSB
 
-BioZoom SDK
+Scanner SDK
 
 ---
 
@@ -106,7 +106,7 @@ History
 
 # Scanner
 
-BioZoom SDK
+Scanner SDK
 
 USB only
 

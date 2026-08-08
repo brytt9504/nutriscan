@@ -1,8 +1,9 @@
 // Placeholder scanner "API" for UI prototyping only.
 //
-// This does NOT talk to hardware, WebUSB, or the BioZoom protocol in any
-// way — it exists so the scan-flow screens have something to call while the
-// real integration (packages/biozoom-sdk) is built separately. Nothing here
+// This does NOT talk to hardware, WebUSB, or the real scanner protocol in
+// any way — it exists so the scan-flow screens have something to call while
+// the real integration (an isolated hardware SDK package) is built
+// separately. Nothing here
 // encodes real device behavior; timings and steps are illustrative UX
 // pacing, not confirmed protocol facts. See CLAUDE.md — this file must never
 // be treated as a source of truth for real scanner behavior.

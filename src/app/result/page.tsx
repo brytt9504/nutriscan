@@ -1,16 +1,16 @@
-import { decodeVitalityPayload } from "@/lib/vitality";
+import { decodeScannerPayload } from "@/lib/scanner/parsers/scanner-payload";
 
-// This page renders inside an iframe embedded in the Biozoom tablet app —
-// NOT a page a patient opens directly on their phone. Keep it tablet-width
-// friendly and self-contained (no reliance on browser chrome).
+// This page renders inside an iframe embedded in the scanner vendor's
+// tablet app — NOT a page a patient opens directly on their phone. Keep it
+// tablet-width friendly and self-contained (no reliance on browser chrome).
 //
-// Biozoom's config passes:
-//   ?data=<base64 JSON VitalityCheck payload>&lang=<app language>&theme=light|dark
+// The scanner vendor's config passes:
+//   ?data=<base64 JSON scanner payload>&lang=<app language>&theme=light|dark
 //
 // This is a Stream A placeholder: it proves the route is live and can be
-// pointed at from Biozoom's config so the hardware test can proceed. The
-// full typed decoder, validation, branded result UI, and persistence to
-// Supabase are Stream B.
+// pointed at from the scanner vendor's config so the hardware test can
+// proceed. The full typed decoder, validation, branded result UI, and
+// persistence to Supabase are Stream B.
 
 type ResultPageProps = {
   searchParams: Promise<{ data?: string; lang?: string; theme?: string }>;
@@ -20,7 +20,7 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
   const { data, lang, theme } = await searchParams;
   const isDark = theme === "dark";
 
-  const decoded = data ? decodeVitalityPayload(data) : null;
+  const decoded = data ? decodeScannerPayload(data) : null;
 
   return (
     <div
@@ -57,13 +57,13 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
             <p className={isDark ? "text-slate-400" : "text-slate-600"}>
               No <code>data</code> query param was provided. Once Björn points
               the iframe URL at this page, a real scan will arrive here as a
-              base64-encoded VitalityCheck JSON payload.
+              base64-encoded scanner JSON payload.
             </p>
           )}
 
           {data && decoded && !decoded.ok && (
             <p className="text-red-500">
-              Could not decode <code>data</code> as a VitalityCheck payload:{" "}
+              Could not decode <code>data</code> as a scanner payload:{" "}
               {decoded.error}
             </p>
           )}

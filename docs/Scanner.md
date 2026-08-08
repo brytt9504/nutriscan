@@ -128,7 +128,7 @@ All protocol logic belongs in the SDK.
 
 The UI never communicates directly with USB.
 
-Only the BioZoom service layer talks to hardware.
+Only the scanner service layer talks to hardware.
 
 ---
 

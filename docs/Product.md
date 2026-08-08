@@ -4,7 +4,7 @@
 
 Help people improve their health by making nutrition measurable.
 
-NutriScan provides an immediate visual representation of carotenoid status using a BioZoom scanner.
+NutriScan provides an immediate visual representation of carotenoid status using a connected scanner.
 
 Rather than telling users what to eat, NutriScan motivates healthier choices through objective feedback.
 

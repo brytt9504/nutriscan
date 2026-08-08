@@ -2,7 +2,7 @@
 
 # NutriScan
 
-NutriScan is a configurable, white-label web platform for BioZoom scanners.
+NutriScan is a configurable, white-label web platform for hardware scanners.
 
 The goal is to create the simplest, most trustworthy scanner experience possible.
 

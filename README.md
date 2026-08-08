@@ -1,9 +1,9 @@
 # nutriscan-web
 
 Web app for NutriScan — a white-labeled clinical vitality-scanning platform
-built on Biozoom hardware. Patients scan on Biozoom's tablet/scanner; this
-app receives the result, displays it, and (from Stream D onward) stores
-scan history and powers the clinician dashboard.
+built on hardware scanners. Patients scan on the scanner vendor's
+tablet/scanner; this app receives the result, displays it, and (from
+Stream D onward) stores scan history and powers the clinician dashboard.
 
 ## Stack
 
@@ -22,10 +22,11 @@ src/
     layout.tsx          root layout, fonts, metadata
     globals.css         Tailwind entry point
     result/
-      page.tsx          /result — renders inside the Biozoom tablet iframe.
-                          Reads ?data=&lang=&theme= query params.
+      page.tsx          /result — renders inside the scanner vendor's
+                          tablet iframe. Reads ?data=&lang=&theme= query
+                          params.
   lib/
-    vitality.ts          VitalityCheck payload type + base64/JSON decoder
+    scanner-payload.ts   Scanner payload type + base64/JSON decoder
     supabase/
       client.ts          browser-side Supabase client (publishable key only)
       server.ts          server-only Supabase client (service_role key —
@@ -38,12 +39,12 @@ src/
 This is infrastructure setup only. What exists:
 
 - App scaffolded, builds and deploys cleanly.
-- `/result` reads its query params and can decode a real VitalityCheck
-  payload, but has no branding, no interpretation copy, and does not persist
+- `/result` reads its query params and can decode a real scanner payload,
+  but has no branding, no interpretation copy, and does not persist
   anything to Supabase yet.
 - No Supabase tables exist yet — `server.ts` is a stub ready for Stream D.
-- Landing page is a placeholder so there's something live to point
-  Biozoom's config at.
+- Landing page is a placeholder so there's something live to point the
+  scanner vendor's config at.
 
 Not yet built (later streams, per the NutriScan build plan): branded result
 UI + interpretation copy (Stream B), patient accounts + scan history
@@ -82,7 +83,7 @@ checklist Brytt has for exact DNS steps).
 
 # NutriScan
 
-NutriScan is a white-label web application for BioZoom vitality scanners.
+NutriScan is a white-label web application for connected nutrition scanners.
 
 The application allows clinicians, retailers, wellness companies, and nutrition brands to deliver branded scanner experiences while using a shared codebase.
 
@@ -122,7 +123,7 @@ Read these documents in order:
 - Supabase
 - Vercel
 - WebUSB
-- BioZoom SDK
+- Scanner SDK
 
 ---
 
